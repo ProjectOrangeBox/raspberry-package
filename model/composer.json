@@ -1,0 +1,21 @@
+{
+  "name": "projectorangebox/model",
+  "authors": [
+    {
+      "name": "Don Myers",
+      "email": "donmyers@me.com",
+      "homepage": "https://github.com/ProjectOrangeBox",
+      "role": "Everything"
+    }
+  ],
+  "description": "Database Parent Model",
+  "require": {
+    "projectorangebox/validate": "dev-master",
+    "catfan/medoo": "1.7.x"
+  },
+  "autoload": {
+    "psr-4": {
+      "projectorangebox\\model\\": "src"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "projectorangebox/middleware",
+  "authors": [
+    {
+      "name": "Don Myers",
+      "email": "donmyers@me.com",
+      "homepage": "https://github.com/ProjectOrangeBox",
+      "role": "Everything"
+    }
+  ],
+  "description": "Middleware",
+  "require": {
+    "projectorangebox/router": "dev-master",
+    "projectorangebox/box": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "projectorangebox\\middleware\\": "src"
+    }
+  }
+}

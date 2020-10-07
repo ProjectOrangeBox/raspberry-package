@@ -1,0 +1,15 @@
+{
+	"name": "projectorangebox/log",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Logger",
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\log\\": "src"
+		}
+	}
+}

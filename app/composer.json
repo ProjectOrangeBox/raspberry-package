@@ -1,0 +1,16 @@
+{
+	"name": "projectorangebox/app",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Application",
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\app\\": "src"
+		},
+		"files": ["src/common.php"]
+	}
+}

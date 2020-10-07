@@ -1,0 +1,5 @@
+<?php
+
+return [
+	'folder' => '/config',
+];

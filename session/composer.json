@@ -1,0 +1,19 @@
+{
+	"name": "projectorangebox/session",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Session",
+	"require": {
+		"projectorangebox/config": "dev-master",
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\session\\": "src"
+		}
+	}
+}

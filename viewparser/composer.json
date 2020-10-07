@@ -1,0 +1,13 @@
+{
+	"name": "projectorangebox/viewparser",
+	"description": "View Parser",
+	"require": {
+		"projectorangebox/views": "dev-master",
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\viewparser\\": "src"
+		}
+	}
+}

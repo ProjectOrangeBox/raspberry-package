@@ -1,0 +1,18 @@
+{
+	"name": "projectorangebox/collection",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "collection",
+	"require": {
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\collection\\": "src"
+		}
+	}
+}

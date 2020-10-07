@@ -1,0 +1,20 @@
+{
+	"name": "projectorangebox/pear",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox/microcms",
+		"role": "Everything"
+	}],
+	"description": "projectorangebox view pear plugin handler",
+	"require": {
+		"projectorangebox/config": "dev-master",
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"files": ["src/Pear.php"],
+		"psr-4": {
+			"projectorangebox\\pear\\": "src"
+		}
+	}
+}

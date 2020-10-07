@@ -1,0 +1,12 @@
+{
+	"name": "projectorangebox/validate",
+	"description": "Validate Input",
+	"require": {
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\validate\\": "src"
+		}
+	}
+}

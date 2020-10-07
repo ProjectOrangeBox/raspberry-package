@@ -1,0 +1,18 @@
+{
+	"name": "projectorangebox/events",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Events",
+	"require": {
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\events\\": "src"
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "projectorangebox/router",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Router",
+	"require": {
+		"projectorangebox/config": "dev-master",
+		"projectorangebox/box": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\router\\": "src"
+		}
+	}
+}

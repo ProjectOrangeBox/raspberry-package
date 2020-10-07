@@ -1,0 +1,26 @@
+{
+	"name": "projectorangebox/box",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox",
+		"role": "Everything"
+	}],
+	"description": "Extra Classes and Functions",
+	"require": {
+		"projectorangebox/router": "dev-master",
+		"projectorangebox/pear": "dev-master",
+		"projectorangebox/views": "dev-master",
+		"projectorangebox/fs": "dev-master",
+		"projectorangebox/box": "dev-master",
+		"brick/varexporter": "dev-master",
+		"funct/funct": "^1.0@dev",
+		"catfan/medoo": "1.7.x"
+	},
+	"autoload": {
+		"psr-4": {
+			"projectorangebox\\box\\": "src"
+		},
+		"files": ["src/common.php"]
+	}
+}

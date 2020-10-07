@@ -1,0 +1,13 @@
+{
+	"name": "projectorangebox/fs",
+	"authors": [{
+		"name": "Don Myers",
+		"email": "donmyers@me.com",
+		"homepage": "https://github.com/ProjectOrangeBox/microcms",
+		"role": "Everything"
+	}],
+	"description": "projectorangebox file system abstract",
+	"autoload": {
+		"files": ["src/FS.php"]
+	}
+}
