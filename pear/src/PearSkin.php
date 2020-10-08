@@ -43,7 +43,7 @@ class PearSkin implements PearSkinInterface
 	public function __construct(array $config)
 	{
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/Config.php', $config);
+		$this->config = array_replace(require __DIR__ . '/config.php', $config);
 
 		$this->plugins = $config['plugins'];
 

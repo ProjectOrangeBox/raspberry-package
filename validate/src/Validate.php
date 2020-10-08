@@ -86,7 +86,7 @@ class Validate implements ValidateInterface
 		$this->log('info', 'Validate Class Initialized');
 
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/Config.php', $config);
+		$this->config = array_replace(require __DIR__ . '/config.php', $config);
 
 		/* use the default formatter or the one supplied */
 		$this->errorsFormatterClosure = $config['errors formatter'] ?? function ($errors) {

@@ -39,7 +39,7 @@ class Request implements RequestInterface
 		$this->log('info', 'Request::__construct');
 
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/Config.php', $config);
+		$this->config = array_replace(require __DIR__ . '/config.php', $config);
 
 		$this->headers = [];
 

@@ -21,7 +21,7 @@ class ConfigFile implements ConfigInterface
 	 */
 	public function __construct(array $config)
 	{
-		$this->config['config'] =  array_replace(require __DIR__ . '/Config.php', $config);
+		$this->config['config'] =  array_replace(require __DIR__ . '/config.php', $config);
 
 		/* Yes - Lets resolve it once and test it */
 		$this->configFolder = FS::resolve(trim($this->config['config']['folder'], '/'));
