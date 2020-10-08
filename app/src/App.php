@@ -90,7 +90,7 @@ class App implements AppInterface
 	 *
 	 * @return containerInterface
 	 */
-	static public function container()
+	static public function container(): ContainerInterface
 	{
 		/* using self because there is only 1 container */
 		return self::$container;

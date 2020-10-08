@@ -3,7 +3,6 @@
 /* wrapper to get service from container which is attached to the application */
 
 use projectorangebox\app\exceptions\notInstanceOf;
-use projectorangebox\dispatcher\DispatcherException;
 
 if (!function_exists('service')) {
 	/**

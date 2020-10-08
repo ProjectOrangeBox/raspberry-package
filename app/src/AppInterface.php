@@ -28,5 +28,5 @@ interface AppInterface
 	/**
 	 * container
 	 */
-	static public function container();
+	static public function container(): ContainerInterface;
 }
