@@ -5,6 +5,7 @@ namespace projectorangebox\session;
 use projectorangebox\session\Flashdata;
 use projectorangebox\session\SessionInterface;
 use projectorangebox\session\FlashdataInterface;
+use SessionHandlerInterface; /* php interface */
 
 class Session implements SessionInterface
 {
@@ -24,7 +25,7 @@ class Session implements SessionInterface
 
 		$sessionHandler = new $handler($this->config);
 
-		mustBe($sessionHandler, SessionInterface::class);
+		mustBe($sessionHandler, SessionHandlerInterface::class);
 
 		session_set_save_handler(
 			array($sessionHandler, 'open'),

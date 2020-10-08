@@ -3,7 +3,7 @@
 namespace projectorangebox\session\handlers;
 
 use FS;
-use SessionHandlerInterface;
+use SessionHandlerInterface; /* php interface */
 
 class SessionFile implements SessionHandlerInterface
 {
