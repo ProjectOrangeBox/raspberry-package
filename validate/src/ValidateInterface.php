@@ -2,6 +2,8 @@
 
 namespace projectorangebox\validate;
 
+use Closure;
+
 interface ValidateInterface
 {
 	public function __construct(array $config);
@@ -14,4 +16,5 @@ interface ValidateInterface
 	public function success(): bool;
 	public function reset(): ValidateInterface;
 	public function errors(): array;
+	public function errorsFormatter(Closure $closure): ValidateInterface;
 }

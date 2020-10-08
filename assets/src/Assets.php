@@ -157,41 +157,41 @@ class Assets implements AssetsInterface
 
 	public function variables(): array
 	{
-		return $this->collection->groups();
+		return $this->collection->keys();
 	}
 
 	/*
 	in a php view you can use
 	<?=service('assets')->get($name) ?>
 	*/
-	public function get(string $group): string
+	public function get(string $variable): string
 	{
-		$this->log('DEBUG', $group . ' asset requested');
+		$this->log('DEBUG', $variable . ' asset requested');
 
-		$asArray = $this->collection->get($group, true);
+		$asArray = $this->collection->get($variable, true);
 
-		$asString = (isset($this->formatters[$group])) ? $this->formatters[$group]($asArray) : implode('', $asArray);
+		$asString = (isset($this->formatters[$variable])) ? $this->formatters[$variable]($asArray) : implode('', $asArray);
 
 		return trim($asString);
 	}
 
-	public function has(string $group): bool
+	public function has(string $variable): bool
 	{
-		return $this->collection->has($group);
+		return $this->collection->has($variable);
 	}
 
-	public function add(string $group, $record): AssetsInterface
+	public function add(string $variable, $record): AssetsInterface
 	{
-		$this->log('DEBUG', 'add ' . $group);
+		$this->log('DEBUG', 'add ' . $variable);
 
-		$this->collection->add($group, $record, $this->priority);
+		$this->collection->add($variable, $record, $this->priority);
 
 		$this->resetPriority();
 
 		return $this;
 	}
 
-	public function addMany(string $group, array $records): AssetsInterface
+	public function addMany(string $variable, array $records): AssetsInterface
 	{
 		foreach ($records as $record) {
 			if (\is_array($record)) {
@@ -200,7 +200,7 @@ class Assets implements AssetsInterface
 				$arg = $record;
 			}
 
-			$this->collection->add($group, $arg, $this->priority);
+			$this->collection->add($variable, $arg, $this->priority);
 		}
 
 		$this->resetPriority();
@@ -208,30 +208,11 @@ class Assets implements AssetsInterface
 		return $this;
 	}
 
-	public function changeFormatter(string $group, Closure $closure): AssetsInterface
+	public function changeFormatter(string $variable, Closure $closure): AssetsInterface
 	{
-		$this->formatters[strtolower($group)] = $closure;
+		$this->formatters[strtolower($variable)] = $closure;
 
 		return $this;
-	}
-
-	public function stringifyAttributes(array $attributesArray): string
-	{
-		$attributes = [];
-
-		foreach ($attributesArray as $key => $val) {
-			$attributes[] = $key . '="' . htmlspecialchars($val, ENT_QUOTES) . '"';
-		}
-
-		return ' ' . implode(' ', $attributes);
-	}
-
-	public function htmlElement(string $element, array $attributes, string $content = ''): string
-	{
-		/* HTML Void Element or normal? */
-		return (in_array($element, ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'])) ?
-			'<' . $element . $this->stringifyAttributes($attributes) . '/>' :
-			'<' . $element . $this->stringifyAttributes($attributes) . '>' . $content . '</' . $element . '>';
 	}
 
 	public function debug(): array

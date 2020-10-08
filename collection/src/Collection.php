@@ -21,7 +21,7 @@ class Collection implements CollectionInterface
 	 * @param array $config
 	 * @return void
 	 */
-	public function __construct(array $config)
+	public function __construct(array $config = [])
 	{
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/Config.php', $config);
@@ -32,8 +32,10 @@ class Collection implements CollectionInterface
 	}
 
 	/*
-	add{GroupName}('value')
-	add{GroupName}('value',priority)
+	add{Key}('value')
+	add{Key}('value',priority)
+
+	$c->addPerson('Jane');
 	*/
 	public function __call($name, $arguments)
 	{
@@ -46,64 +48,64 @@ class Collection implements CollectionInterface
 		return $this;
 	}
 
-	public function add(string $group, $value, int $priority = SELF::PRIORITY_NORMAL): CollectionInterface
+	public function add(string $key, $value, int $priority = SELF::PRIORITY_NORMAL): CollectionInterface
 	{
-		$this->normalize($group);
+		$this->normalize($key);
 
-		$key = \md5(\json_encode($value));
+		$md5Key = \md5(\json_encode($value));
 
-		if (!isset($this->duplicates[$group], $this->duplicates[$group][$key])) {
-			$this->sorted[$group] = false; /* not sorted anymore */
+		if (!isset($this->duplicates[$key], $this->duplicates[$key][$md5Key])) {
+			$this->sorted[$key] = false; /* not sorted anymore */
 
-			$priority = ($priority == SELF::PRIORITY_FIRST) ? - ($this->currentIndex++) : $priority . str_pad($this->currentIndex++, 6, '0', \STR_PAD_LEFT);
-
-			$this->collection[$group][(int)$priority] = $value;
+			$this->collection[$key][$this->getNextPriority($priority)] = $value;
 
 			if ($this->preventDuplicates) {
-				$this->duplicates[$group][$key] = true; /* prevent duplicates */
+				$this->duplicates[$key][$md5Key] = true; /* prevent duplicates */
 			}
 		}
 
 		return $this;
 	}
 
-	public function changeOrganizer(string $name, Closure $closure): CollectionInterface
+	public function changeOrganizer(string $key, Closure $closure): CollectionInterface
 	{
-		$this->organizers[strtolower($name)] = $closure;
+		$this->normalize($key);
+
+		$this->organizers[$key] = $closure;
 
 		return $this;
 	}
 
 	/**
-	 * @param mixed|null $groups
+	 * @param mixed|null $keys
 	 * @return CollectionInterface
 	 */
-	public function remove($groups = null): CollectionInterface
+	public function remove($keys = null): CollectionInterface
 	{
-		foreach ($this->groups2Array($groups) as $group) {
-			$this->normalize($group);
+		foreach ($this->keys2Array($keys) as $key) {
+			$this->normalize($key);
 
-			unset($this->collection[$group]);
-			unset($this->collectionSorted[$group]);
-			unset($this->duplicates[$group]);
-			unset($this->sorted[$group]);
+			unset($this->collection[$key]);
+			unset($this->collectionSorted[$key]);
+			unset($this->duplicates[$key]);
+			unset($this->sorted[$key]);
 		}
 
 		return $this;
 	}
 
 	/**
-	 * @param mixed|null $groups
+	 * @param mixed|null $keys
 	 * @return bool
 	 */
-	public function has($groups = null): bool
+	public function has($keys = null): bool
 	{
 		$has = false;
 
-		foreach ($this->groups2Array($groups) as $group) {
-			$this->normalize($group);
+		foreach ($this->keys2Array($keys) as $key) {
+			$this->normalize($key);
 
-			if ($has = isset($this->collection[$group])) {
+			if ($has = isset($this->collection[$key])) {
 				break;
 			}
 		}
@@ -112,20 +114,20 @@ class Collection implements CollectionInterface
 	}
 
 	/**
-	 * @param mixed|null $groups
+	 * @param mixed|null $keys
 	 * @return array
 	 */
-	public function get($groups = null, bool $flattenSingle = true): array
+	public function get($keys = null, bool $flattenSingle = true): array
 	{
 		$matches = [];
 
-		foreach ($this->groups2Array($groups) as $group) {
-			$this->normalize($group);
+		foreach ($this->keys2Array($keys) as $key) {
+			$this->normalize($key);
 
-			$matches[$group] = $this->getGroup($group);
+			$matches[$key] = $this->getKey($key);
 		}
 
-		/* if it's a single group do they want to return only the array values */
+		/* if it's a single key do they want to return only the array values */
 		if ($flattenSingle && count($matches) == 1) {
 			$matches = \array_shift($matches);
 		}
@@ -140,7 +142,7 @@ class Collection implements CollectionInterface
 		return $this;
 	}
 
-	public function groups(): array
+	public function keys(): array
 	{
 		return \array_keys($this->collection);
 	}
@@ -158,47 +160,52 @@ class Collection implements CollectionInterface
 	/* protected */
 
 	/**
-	 * @param mixed|null $groups
+	 * @param mixed|null $keys
 	 * @return array
 	 */
-	protected function groups2Array($groups = null): array
+	protected function keys2Array($keys = null): array
 	{
-		if (is_string($groups)) {
-			$groups = explode(',', $groups);
-		} elseif ($groups === null) {
-			$groups = array_keys($this->collection);
+		if (is_string($keys)) {
+			$keys = explode(',', $keys);
+		} elseif ($keys === null) {
+			$keys = array_keys($this->collection);
 		}
 
-		return (array)$groups;
+		return (array)$keys;
 	}
 
-	/* heavy lifter - this gets a single group sorting it if nessesary */
-	public function getGroup(string $group): array
+	/* heavy lifter - this gets a single key sorting it if nessesary */
+	protected function getKey(string $key): array
 	{
-		$this->normalize($group);
+		$this->normalize($key);
 
-		if (isset($this->collection[$group])) {
+		if (isset($this->collection[$key])) {
 			/* has it already been sorted */
-			if (!$this->sorted[$group]) {
+			if (!$this->sorted[$key]) {
 				/* we store this in another array because of the organizers will work on the same data over and over */
-				$this->collectionSorted[$group] = $this->collection[$group];
+				$this->collectionSorted[$key] = $this->collection[$key];
 
-				ksort($this->collectionSorted[$group]);
+				ksort($this->collectionSorted[$key]);
 
-				if (isset($this->organizers[strtolower($group)])) {
-					$this->collectionSorted[$group] = $this->organizers[strtolower($group)]($this->collectionSorted[$group], $this->config);
+				if (isset($this->organizers[$key])) {
+					$this->collectionSorted[$key] = $this->organizers[$key]($this->collectionSorted[$key], $this->config);
 				}
 
 				/* mark it as sorted */
-				$this->sorted[$group] = true;
+				$this->sorted[$key] = true;
 			}
 		}
 
-		return ($this->collectionSorted[$group]) ? \array_values($this->collectionSorted[$group]) : [];
+		return ($this->collectionSorted[$key]) ? \array_values($this->collectionSorted[$key]) : [];
 	}
 
 	protected function normalize(&$string)
 	{
 		$string = ($this->makeLowercase) ? strtolower($string) : $string;
+	}
+
+	protected function getNextPriority(int $priority): int
+	{
+		return ($priority == SELF::PRIORITY_FIRST) ? - ($this->currentIndex++) : $priority . str_pad($this->currentIndex++, 6, '0', \STR_PAD_LEFT);
 	}
 } /* end class */

@@ -66,6 +66,13 @@ class Validate implements ValidateInterface
 	protected $rules = [];
 
 	/**
+	 * $errorsFormatterClosure
+	 *
+	 * @var null
+	 */
+	protected $errorsFormatterClosure = null;
+
+	/**
 	 *
 	 * Constructor
 	 *
@@ -80,6 +87,17 @@ class Validate implements ValidateInterface
 
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/Config.php', $config);
+
+		/* use the default formatter or the one supplied */
+		$this->errorsFormatterClosure = $config['errors formatter'] ?? function ($errors) {
+			return [
+				'success' => !(bool)count($errors),
+				'count' => count($errors),
+				'keys' => \array_keys($errors),
+				'errors' => $errors,
+				'timestamp' => date('c'),
+			];
+		};
 	}
 
 	/**
@@ -161,6 +179,13 @@ class Validate implements ValidateInterface
 		return $this->setData($data)->setRules($rules)->run()->success();
 	}
 
+	/**
+	 * Method setData
+	 *
+	 * @param array $fields [explicite description]
+	 *
+	 * @return ValidateInterface
+	 */
 	public function setData(array &$fields): ValidateInterface
 	{
 		$this->fieldData = &$fields;
@@ -168,15 +193,23 @@ class Validate implements ValidateInterface
 		return $this;
 	}
 
+	/**
+	 * Method setRules
+	 *
+	 * @param array $rules [explicite description]
+	 * @param string $key [explicite description]
+	 *
+	 * @return ValidateInterface
+	 */
 	public function setRules(array $rules, string $key = '0'): ValidateInterface
 	{
 		foreach ($rules as $k => $v) {
-			$rulesToUse = (isset($v['rules'])) ? $v['rules'] : $v;
+			$rulesToUse = $v['rules'] ?? $v;
 
-			$humanToUse = (isset($v['label'])) ? $v['label'] : $k;
-			$humanToUse = (isset($v['human'])) ? $v['human'] : $humanToUse;
+			$humanToUse = $v['label'] ?? $k;
+			$humanToUse = $v['human'] ?? $humanToUse;
 
-			$fieldToUse = (isset($v['field'])) ? $v['field'] : $k;
+			$fieldToUse = $v['field'] ?? $k;
 
 			$this->rules[$key][$fieldToUse] = ['rule' => $rulesToUse, 'human' => $humanToUse, 'field' => $fieldToUse];
 		}
@@ -194,6 +227,11 @@ class Validate implements ValidateInterface
 		return count($this->errors) == 0;
 	}
 
+	/**
+	 * Method reset
+	 *
+	 * @return ValidateInterface
+	 */
 	public function reset(): ValidateInterface
 	{
 		$this->errors = [];
@@ -202,19 +240,30 @@ class Validate implements ValidateInterface
 		return $this;
 	}
 
+	/**
+	 * Method errors
+	 *
+	 * @param bool $formatted [explicite description]
+	 *
+	 * @return array
+	 */
 	public function errors(bool $formatted = false): array
 	{
-		if ($formatted) {
-			$errors['success'] = !(bool)count($this->errors);
-			$errors['count'] = count($this->errors);
-			$errors['keys'] = \array_keys($this->errors);
-			$errors['errors'] = $this->errors;
-			$errors['timestamp'] = date('c');
-		} else {
-			$errors = $this->errors;
-		}
+		return ($formatted) ? ($this->errorsFormatterClosure)($this->errors) : $this->errors;
+	}
 
-		return $errors;
+	/**
+	 * Method errorsFormatter
+	 *
+	 * @param Closure $closure [explicite description]
+	 *
+	 * @return ValidateInterface
+	 */
+	public function errorsFormatter(Closure $closure): ValidateInterface
+	{
+		$this->errorsFormatterClosure = $closure;
+
+		return $this;
 	}
 
 	/**
@@ -266,7 +315,7 @@ class Validate implements ValidateInterface
 			$this->errorFieldValue =  $this->fieldData[$key];
 
 			foreach ($rules as $rule) {
-				if ($this->process_rule($key, $rule, $human) === false) {
+				if ($this->processRule($key, $rule, $human) === false) {
 					break; /* break from for each */
 				}
 			}
@@ -275,7 +324,7 @@ class Validate implements ValidateInterface
 		return $this;
 	}
 
-	protected function process_rule(string $key, string $rule, string $human): bool
+	protected function processRule(string $key, string $rule, string $human): bool
 	{
 		/* no rule? exit processing of the $rules array */
 		if (empty($rule)) {
@@ -410,6 +459,6 @@ class Validate implements ValidateInterface
 
 	protected function find(string $className, string $type) /* mixed */
 	{
-		return (isset($this->config[$type][$className])) ? $this->config[$type][$className] : false;
+		return $this->config[$type][$className] ?? false;
 	}
 } /* end class */

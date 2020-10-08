@@ -1,19 +1,24 @@
 {
-	"name": "projectorangebox/assets",
-	"authors": [{
-		"name": "Don Myers",
-		"email": "donmyers@me.com",
-		"homepage": "https://github.com/ProjectOrangeBox",
-		"role": "Everything"
-	}],
-	"description": "Assets Manager for Views",
-	"require": {
-		"projectorangebox/collection": "dev-master",
-		"projectorangebox/box": "dev-master"
-	},
-	"autoload": {
-		"psr-4": {
-			"projectorangebox\\assets\\": "src"
-		}
-	}
+  "name": "projectorangebox/assets",
+  "authors": [
+    {
+      "name": "Don Myers",
+      "email": "donmyers@me.com",
+      "homepage": "https://github.com/ProjectOrangeBox",
+      "role": "Everything"
+    }
+  ],
+  "description": "Assets Manager for Views",
+  "require": {
+    "projectorangebox/collection": "dev-master",
+    "projectorangebox/box": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "projectorangebox\\assets\\": "src"
+    },
+    "files": [
+      "src/common.php"
+    ]
+  }
 }

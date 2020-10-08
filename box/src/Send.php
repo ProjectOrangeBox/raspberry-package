@@ -40,8 +40,8 @@ class Send
 	 */
 	static public function error(string $body = null, string $header = null)
 	{
-		$header = ($header) ?? 'System Error.';
-		$body = ($body) ?? 'The application cannot continue.';
+		$header = $header ?? 'System Error.';
+		$body = $body ?? 'The application cannot continue.';
 
 		self::response('error', ['header' => $header, 'body' => $body], 500);
 	}
@@ -74,8 +74,8 @@ class Send
 	 */
 	static public function fourohfour(string $body = null, string $header = null)
 	{
-		$header = ($header) ?? 'Page Not Found.';
-		$body = ($body) ?? 'The page you where looking for was not found.';
+		$header = $header ?? 'Page Not Found.';
+		$body = $body ?? 'The page you where looking for was not found.';
 
 		self::response('404', ['header' => $header, 'body' => $body], 404);
 	}
