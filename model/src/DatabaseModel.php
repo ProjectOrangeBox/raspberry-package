@@ -5,7 +5,7 @@ namespace projectorangebox\model;
 use Medoo\Medoo;
 use projectorangebox\validate\ValidateInterface;
 
-class DatabaseModel
+abstract class DatabaseModel extends Model
 {
 	protected $config = [];
 	protected $db;
@@ -17,7 +17,8 @@ class DatabaseModel
 
 	public function __construct(array $config)
 	{
-		$this->config = $config;
+		/* merge the passed into array over the default configuration */
+		$this->config = array_replace(require __DIR__ . '/config.php', $config);
 
 		mustBe($this->config['db'], Medoo::class);
 

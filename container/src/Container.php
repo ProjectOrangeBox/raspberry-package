@@ -89,13 +89,13 @@ class Container implements ContainerInterface
 	 */
 	public function get(string $serviceName)
 	{
+		$this->buildServiceName($serviceName);
+
 		/* Is this service even registered? */
 		if (!$this->has($serviceName)) {
 			/* fatal */
 			throw new ServiceNotRegistered($serviceName);
 		}
-
-		$serviceName = strtolower($serviceName);
 
 		/* is this a variable a singleton or factory */
 		if (isset($this->registeredServices[$serviceName]['value'])) {
@@ -117,7 +117,9 @@ class Container implements ContainerInterface
 	 */
 	public function has(string $serviceName): bool
 	{
-		return isset($this->registeredServices[strtolower($serviceName)]);
+		$this->buildServiceName($serviceName);
+
+		return isset($this->registeredServices[$serviceName]);
 	}
 
 	/**
@@ -130,7 +132,7 @@ class Container implements ContainerInterface
 	 */
 	public function register(string $serviceName, $value, bool $singleton = false): void
 	{
-		$serviceName = strtolower($serviceName);
+		$this->buildServiceName($serviceName);
 
 		if ($value instanceof Closure) {
 			$this->registeredServices[$serviceName] = ['closure' => $value, 'singleton' => $singleton, 'reference' => null];
@@ -147,7 +149,14 @@ class Container implements ContainerInterface
 	 */
 	public function remove(string $serviceName): void
 	{
-		unset($this->registeredServices[strtolower($serviceName)]);
+		$this->buildServiceName($serviceName);
+
+		unset($this->registeredServices[$serviceName]);
+	}
+
+	protected function buildServiceName(string &$serviceName): void
+	{
+		$serviceName = strtolower($serviceName);
 	}
 
 	/**

@@ -1,0 +1,20 @@
+{
+  "name": "projectorangebox/acl",
+  "authors": [
+    {
+      "name": "Don Myers",
+      "email": "donmyers@me.com",
+      "homepage": "https://github.com/ProjectOrangeBox",
+      "role": "Everything"
+    }
+  ],
+  "description": "Access Control Layer",
+  "require": {
+    "projectorangebox/model": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "projectorangebox\\acl\\": "src"
+    }
+  }
+}

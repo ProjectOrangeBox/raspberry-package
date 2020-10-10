@@ -80,7 +80,7 @@ class ConfigFileDatabase extends ConfigFile implements ConfigInterface
       $statement->execute(['group' => $group]);
 
       while ($record = $statement->fetch()) {
-        $this->set($group . '.' . $record['key'], $record['value']);
+        $this->set($record['group'] . '.' . $record['key'], convert_to_real($record['value']));
       }
     }
   }
