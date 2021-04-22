@@ -461,6 +461,60 @@ class FS
 		return \fopen(self::resolve($filename), $mode);
 	}
 
+	/* wrapper */
+	static public function fclose($handle): bool
+	{
+		return \fclose($handle);
+	}
+
+	/* wrapper */
+	static public function fwrite($handle, string $string, int $length = null): int
+	{
+		return \fwrite($handle, $string, $length);
+	}
+
+	/* wrapper */
+	static public function feof($stream): bool
+	{
+		return \feof($stream);
+	}
+
+	/* wrapper */
+	static public function fgetc($stream)
+	{
+		return \fgetc($stream);
+	}
+
+	/* wrapper */
+	static public function fgets($handle, int $length = null)
+	{
+		return \fgets($handle, $length);
+	}
+
+	/* wrapper */
+	static public function fgetcsv($stream, int $length = 0, string $separator = ",", string $enclosure = '"', string $escape = "\\"): array
+	{
+		return \fgetcsv($stream, $length, $separator, $enclosure, $escape);
+	}
+
+	/* wrapper */
+	static public function fputcsv($handle, array $fields, string $delimiter = ",", string $enclosure = '"', string $escape_char = "\\")
+	{
+		return \fputcsv($handle, $fields, $delimiter, $enclosure, $escape_char);
+	}
+
+	/* wrapper */
+	static public function flock($stream, int $operation, int &$would_block = null): bool
+	{
+		return \flock($stream, $operation, $would_block);
+	}
+
+	/* wrapper */
+	static public function is_readable(string $filename): bool
+	{
+		return \is_readable(self::resolve($filename));
+	}
+
 	/**
 	 * file_put_contents — Write data to a file
 	 *
