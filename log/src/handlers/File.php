@@ -9,16 +9,12 @@ use projectorangebox\log\exceptions\NotWritable;
 
 class File extends LoggerAbstract implements LoggerInterface
 {
-	protected $config = [];
 	protected $logFile = null;
 	protected $filePermissions = 666; /* converted to octdec before chmod called */
-	protected $lineDateFormat = 'r';
 
 	public function __construct(array $config)
 	{
-		$this->config = array_replace(require __DIR__ . '/../Config.php', $config);
-
-		parent::__construct($this->config);
+		parent::__construct(array_replace(['threshold' => 0, 'path' => '/var/logs', 'cleanup' => 7], $config));
 
 		if ($this->enabled) {
 			/* absolute log folder */
@@ -30,8 +26,6 @@ class File extends LoggerAbstract implements LoggerInterface
 
 				throw new NotWritable(FS::resolve($absoluteLogFolder, true));
 			}
-
-			$this->lineDateFormat = $this->config['line date format'] ?? $this->lineDateFormat;
 
 			$this->filePermissions = $this->config['permissions'] ?? $this->filePermissions;
 

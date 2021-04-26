@@ -6,6 +6,8 @@ abstract class LoggerAbstract
 {
 	protected $enabled = false;
 	protected $threshold = 0;
+	protected $config = [];
+	protected $lineDateFormat = 'r';
 
 	const EMERGENCY = 'emergency';
 	const ALERT     = 'alert';
@@ -29,6 +31,8 @@ abstract class LoggerAbstract
 
 	protected function __construct(array $config)
 	{
+		$this->config = $config;
+
 		/* log threshold */
 		$logThreshold = $config['threshold'] ?? '';
 
@@ -61,6 +65,8 @@ abstract class LoggerAbstract
 
 				$logThreshold = $int;
 			}
+
+			$this->lineDateFormat = $this->config['line date format'] ?? $this->lineDateFormat;
 		}
 
 		$this->threshold = (int) $logThreshold;
@@ -89,8 +95,10 @@ abstract class LoggerAbstract
 
 		$lines .= date($this->lineDateFormat) . ' ' . $level . $t . $message . PHP_EOL;
 
-		foreach ($context as $key => $value) {
-			$lines .= $t . $key . $t . json_encode($value, JSON_PRETTY_PRINT) . PHP_EOL;
+		if (count($context) > 0) {
+			foreach ($context as $key => $value) {
+				$lines .= $t . $key . $t . json_encode($value, JSON_PRETTY_PRINT) . PHP_EOL;
+			}
 		}
 
 		return $lines;
