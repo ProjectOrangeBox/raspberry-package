@@ -117,7 +117,7 @@ class Response implements ResponseInterface
 			$statusCode = $code . ' ' . $this->statusCodes[$code];
 		} else {
 			$inverse = array_change_key_case(array_flip($this->statusCodes), CASE_LOWER);
-			$lcCode = strtolower($code);
+			$lcCode = strtolower((string)$code);
 
 			if (isset($inverse[$lcCode])) {
 				$statusCode = $inverse[$lcCode] . ' ' . $this->statusCodes[$inverse[$lcCode]];
