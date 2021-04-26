@@ -3,9 +3,9 @@
 namespace projectorangebox\cache;
 
 use Exception;
+use projectorangebox\log\LoggerTrait;
 use projectorangebox\cache\CacheAbstract;
 use projectorangebox\cache\CacheInterface;
-use projectorangebox\log\LoggerTrait;
 
 class CacheMemcached extends CacheAbstract implements CacheInterface
 {
@@ -44,7 +44,7 @@ class CacheMemcached extends CacheAbstract implements CacheInterface
 			}
 		}
 
-		$this->log('info', 'CacheMemcached::__construct');
+		$this->log('debug', 'CacheMemcached::__construct');
 	}
 
 	/**

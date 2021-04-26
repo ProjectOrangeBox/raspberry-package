@@ -21,7 +21,7 @@ class Views implements ViewsInterface
 	 */
 	public function __construct(array $config)
 	{
-		$this->log('info', 'Views::__construct');
+		$this->log('debug', 'Views::__construct');
 
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/config.php', $config);
@@ -73,7 +73,7 @@ class Views implements ViewsInterface
 	 */
 	public function render(string $key, array $data = null): string
 	{
-		$this->log('info', 'Views::render::' . $key);
+		$this->log('debug', 'Views::render::' . $key);
 
 		if (is_array($data)) {
 			$this->data = array_replace($this->data, $data);

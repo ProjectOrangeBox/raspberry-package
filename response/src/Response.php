@@ -28,7 +28,7 @@ class Response implements ResponseInterface
 	 */
 	public function __construct(array $config)
 	{
-		$this->log('info', 'Response::__construct');
+		$this->log('debug', 'Response::__construct');
 
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/config.php', $config);

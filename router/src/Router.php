@@ -27,7 +27,7 @@ class Router implements RouterInterface
 
 	public function __construct(array $config)
 	{
-		$this->log('info', 'Router::__construct');
+		$this->log('debug', 'Router::__construct');
 
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/config.php', $config);
@@ -37,7 +37,7 @@ class Router implements RouterInterface
 
 	public function handle(string $uri, string $httpMethod) /* mixed */
 	{
-		$this->log('info', 'URI ' . $uri);
+		$this->log('debug', 'URI ' . $uri);
 
 		/* clear captured */
 		$this->captured = [];
@@ -48,7 +48,7 @@ class Router implements RouterInterface
 		if (is_array($this->routes[$httpMethod])) {
 			foreach ($this->routes[$httpMethod] as $regex => $match) {
 				if (preg_match($regex, $uri, $params)) {
-					$this->log('info', 'Matched the URI: ' . $uri . ' Against: ' . $regex);
+					$this->log('debug', 'Matched the URI: ' . $uri . ' Against: ' . $regex);
 
 					foreach ($params as $key => $value) {
 						$this->captured[$key] = $value;

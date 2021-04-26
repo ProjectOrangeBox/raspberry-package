@@ -53,7 +53,7 @@ class Auth implements AuthInterface
 			}
 		}
 
-		$this->log('info', 'Auth Class Initialized');
+		$this->log('debug', 'Auth Class Initialized');
 	}
 	/**
 	 *
@@ -89,7 +89,7 @@ class Auth implements AuthInterface
 
 		$this->triggerEvent('auth.login', $userPrimaryKey, $success);
 
-		$this->log('info', 'Auth Class login');
+		$this->log('debug', 'Auth Class login');
 
 		return $success; /* boolean */
 	}
@@ -105,7 +105,7 @@ class Auth implements AuthInterface
 	 */
 	public function logout(): Bool
 	{
-		$this->log('info', 'Auth Class logout');
+		$this->log('debug', 'Auth Class logout');
 
 		$success = true;
 
@@ -155,7 +155,7 @@ class Auth implements AuthInterface
 			}
 		}
 
-		$this->log('info', 'Auth Class Refreshed');
+		$this->log('debug', 'Auth Class Refreshed');
 	}
 
 	/**

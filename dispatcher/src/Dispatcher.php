@@ -85,7 +85,7 @@ class Dispatcher implements DispatcherInterface
 			$this->middlewareService->request(new MiddlewareRequest($this->container, $request, $this->responseService));
 		}
 
-		$this->log('info', __CLASS__ . ' "' . $request->uri() . '" "' . $request->requestMethod() . '" ' . $request->server('request_method') . '::' . $request->server('request_uri'));
+		$this->log('debug', __CLASS__ . ' "' . $request->uri() . '" "' . $request->requestMethod() . '" ' . $request->server('request_method') . '::' . $request->server('request_uri'));
 
 		/* throws an exception if a route isn't found */
 		$matched = $this->routerService->handle($request->uri(), $request->requestMethod());

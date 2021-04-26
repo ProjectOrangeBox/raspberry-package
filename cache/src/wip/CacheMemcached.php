@@ -42,7 +42,7 @@ class CacheMemcached extends CacheAbstract implements CacheInterface
 			}
 		}
 
-		$this->log('info', 'CacheMemcached::__construct');
+		$this->log('debug', 'CacheMemcached::__construct');
 	}
 
 	/**

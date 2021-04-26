@@ -35,8 +35,8 @@ class Screen extends LoggerAbstract implements LoggerInterface
 						break;
 					case 'info': //info
 						$color = "\033[36m";
-					case 'debug': //info
-
+					case 'debug':
+						// default console color
 						break;
 				}
 

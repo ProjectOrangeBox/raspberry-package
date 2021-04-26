@@ -82,7 +82,7 @@ abstract class RuleAbstract
 		$this->field_data = &$field_data;
 		$this->error_string = &$error_string;
 
-		$this->log('info', 'Validate Class Initialized');
+		$this->log('debug', 'Validate Class Initialized');
 	}
 
 	/**
