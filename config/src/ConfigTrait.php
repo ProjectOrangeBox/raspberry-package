@@ -20,10 +20,10 @@ trait ConfigTrait
 			$this->_configService = service('config');
 		}
 	}
-	public function getConfig(string $dotNotation, $default = null)
+	public function getConfig(string $dotNotation, $default = null, bool $required = false)
 	{
 		$this->getConfigService();
 
-		return $this->_configService->get($dotNotation, $default);
+		return $this->_configService->get($dotNotation, $default, $required);
 	}
-}
+} /* end trait */

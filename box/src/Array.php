@@ -96,3 +96,20 @@ function array_remap(array $array, array $mapArray): array
 
 	return $newArray;
 }
+
+/**
+ * array_keys_exists — Checks if the given key or index exists in the array
+ * 
+ * note: throws error if a key is missing.
+ *
+ * @param array $keys
+ * @param array $array
+ * @return bool:array
+ */
+
+if (!function_exists('array_keys_exists')) {
+	function array_keys_exists(array $keys, array $array) /* mixed */
+	{
+		return (array_diff_key(array_flip($keys), $array)) ? array_keys(array_diff_key(array_flip($keys), $array)) : true;
+	}
+}

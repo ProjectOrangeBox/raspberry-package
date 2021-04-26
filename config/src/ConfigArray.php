@@ -3,8 +3,9 @@
 namespace projectorangebox\config;
 
 use projectorangebox\config\ConfigInterface;
+use projectorangebox\config\exceptions\MissingConfig;
 
-class ConfigFile implements ConfigInterface
+class ConfigArray implements ConfigInterface
 {
 	protected $config = [];
 
@@ -36,7 +37,26 @@ class ConfigFile implements ConfigInterface
 	 * @param mixed $default default if not found
 	 * @return mixed
 	 */
-	public function get(string $notation,/* mixed */ $default = null) /* mixed */
+	public function get(string $name, $default = null, bool $required = false)
+	{
+		$value = $this->_get($name, $default);
+
+		/* get the server config */
+		if ($default === null && $value === null && $required == true) {
+			throw new MissingConfig($name);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get a value with default based on dot notation
+	 *
+	 * @param string $notation
+	 * @param mixed $default default if not found
+	 * @return mixed
+	 */
+	public function _get(string $notation,/* mixed */ $default = null) /* mixed */
 	{
 		$value = $default;
 

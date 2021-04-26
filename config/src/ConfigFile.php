@@ -3,13 +3,12 @@
 namespace projectorangebox\config;
 
 use FS;
+use projectorangebox\config\ConfigArray;
 use projectorangebox\config\ConfigInterface;
 use projectorangebox\config\exceptions\DirectoryNotFound;
 
-class ConfigFile implements ConfigInterface
+class ConfigFile extends ConfigArray implements ConfigInterface
 {
-	protected $config = [];
-
 	/* storage if they are using a config folder */
 	protected $configFolder = '';
 
@@ -34,24 +33,7 @@ class ConfigFile implements ConfigInterface
 		$this->configFolder .= '/';
 	}
 
-	/**
-	 * Return entire configuration array
-	 *
-	 * @return array
-	 */
-	public function collect(): array
-	{
-		return $this->config;
-	}
-
-	/**
-	 * Get a value with default based on dot notation
-	 *
-	 * @param string $notation
-	 * @param mixed $default default if not found
-	 * @return mixed
-	 */
-	public function get(string $notation,/* mixed */ $default = null) /* mixed */
+	public function _get(string $notation,/* mixed */ $default = null) /* mixed */
 	{
 		$value = $default;
 
