@@ -16,13 +16,21 @@ class Screen extends LoggerAbstract implements LoggerInterface
 	{
 		if ($this->enabled) {
 			if ($this->testLevel($level)) {
-				$message = $this->format($level, $message);
 				$exit = false;
 
 				switch ($level) {
 					case 'emergency': // EMERGENCY
+						$color = "\033[35m";
+						$exit = true;
+						break;
 					case 'alert':
+						$color = "\033[91m";
+						$exit = true;
+						break;
 					case 'critical':
+						$color = "\033[95m";
+						$exit = true;
+						break;
 					case 'error': //error
 						$color = "\033[31m";
 						$exit = true;
@@ -40,9 +48,9 @@ class Screen extends LoggerAbstract implements LoggerInterface
 						break;
 				}
 
-				echo $color;
-				echo $message;
-				echo "\033[0m";
+				echo $color; /* turn on color */
+				echo $this->format($level, $message);
+				echo "\033[0m"; /* turn off color */
 
 				if ($exit) {
 					exit(1);

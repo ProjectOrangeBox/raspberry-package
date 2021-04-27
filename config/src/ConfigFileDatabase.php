@@ -32,56 +32,57 @@ class ConfigFileDatabase extends ConfigFile implements ConfigInterface
 	public function _get(string $notation,/* mixed */ $default = null) /* mixed */
 	{
 		/* Are they trying to attach a database? */
-		if (isset($this->config['config']['database'])) {
+		if (isset($this->config['database'])) {
 			/* try to connect to the database */
-			$this->connectDB();
+			$this->connectDB($this->config['database']);
 
 			/* Have we loaded this database config group yet? */
-			$notationParts = explode('.', $notation, 2);
+			list($fileGroup, $key) = explode('.', $notation, 2);
 
-			/* load file based */
-			parent::loadFile($notationParts[0]);
+			/* parent is file based - load file based */
+			parent::loadFile($fileGroup);
 
 			/* than try to load the entire database group */
-			$this->getGroup($notationParts[0]);
+			$this->getGroup($fileGroup, $this->config['database']['tablename']);
 		}
 
+		/* parent is file based */
 		return parent::get($notation, $default);
 	}
 
-	protected function connectDB()
+	protected function connectDB(array $config)
 	{
 		/* is PDO setup? */
 		if (!$this->pdo) {
 			/* check for required to make the connection */
-			foreach (['dsn', 'user', 'password', 'tablename'] as $required) {
-				if (!isset($this->config['config']['database'][$required])) {
-					throw new MissingConfig($required);
-				}
+			if (is_array($missing = array_keys_exists(['dsn', 'user', 'password', 'tablename'], $config))) {
+				throw new MissingConfig('array key(s) "' . implode('","', $missing) . '" missing.');
 			}
 
-			/* mysql:host=localhost;dbname=example;port=3306 */
+			/* DSN mysql:host=localhost;dbname=example;port=3306 */
 			try {
-				$this->pdo = new PDO($this->config['config']['database']['dsn'], $this->config['config']['database']['user'], $this->config['config']['database']['password'], $this->pdoOptions);
+				$this->pdo = new PDO($config['dsn'], $config['user'], $config['password'], $this->pdoOptions);
 			} catch (PDOException $exception) {
 				throw new PDOException($exception->getMessage(), (int)$exception->getCode());
 			}
 		}
 	}
 
-	protected function getGroup(string $group)
+	protected function getGroup(string $group, string $tablename)
 	{
 		/* did we already load this from the database? */
 		if (!isset($this->isLoaded[$group])) {
-			$this->isLoaded[$group] = true;
 			/* run the query */
-			$statement = $this->pdo->prepare("SELECT * FROM `" . $this->config['config']['database']['tablename'] . "` where `group`=:group and `enabled` = 1");
+			$statement = $this->pdo->prepare("SELECT * FROM `" . $tablename . "` where `group`=:group and `enabled` = 1");
 
 			$statement->execute(['group' => $group]);
 
 			while ($record = $statement->fetch()) {
 				$this->set($record['group'] . '.' . $record['key'], convert_to_real($record['value']));
 			}
+
+			/* mark as already loaded */
+			$this->isLoaded[$group] = true;
 		}
 	}
 } /* end class */
