@@ -59,3 +59,30 @@ if (!function_exists('mustBe')) {
 		}
 	}
 }
+
+if (!function_exists('buildConfig')) {
+	function buildConfig(array $config, array $required = [],/* string|array */ $default = []): array
+	{
+		if (is_string($default)) {
+			$defaultFile = $default;
+
+			$default = require $default;
+
+			if (!is_array($default)) {
+				throw new Exception('Configuration default file "' . $defaultFile . '" did not return a array.');
+			}
+		} elseif (!is_array($default)) {
+			throw new Exception('Configuration default is not an array.');
+		}
+
+
+		// Merge the passed config over the default config
+		$config = array_replace($default, $config);
+
+		if (is_array($required) && is_array($missing = array_keys_exists($required, $config))) {
+			throw new \projectorangebox\config\exceptions\MissingConfig('Configuration Key(s) "' . implode('","', $missing) . '" missing.');
+		}
+
+		return $config;
+	}
+}

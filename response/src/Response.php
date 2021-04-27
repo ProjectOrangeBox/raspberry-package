@@ -4,6 +4,7 @@ namespace projectorangebox\response;
 
 use Exception;
 use projectorangebox\log\LoggerTrait;
+use projectorangebox\request\RequestInterface;
 use projectorangebox\response\ResponseInterface;
 use projectorangebox\response\exceptions\UnknownContentType;
 use projectorangebox\response\exceptions\UnknownResponseCode;
@@ -21,6 +22,8 @@ class Response implements ResponseInterface
 	protected $statusCodes = [];
 	protected $mimesTypes = [];
 
+	protected $request = null;
+
 	/**
 	 * @param array $config
 	 * @return void
@@ -37,6 +40,10 @@ class Response implements ResponseInterface
 
 		$this->statusCodes = $this->config['statusCodes'];
 		$this->mimesTypes = $this->config['mimesTypes'];
+
+		mustBe($this->config['request'], RequestInterface::class);
+
+		$this->request = $this->config['request'];
 	}
 
 	/** @return string  */
@@ -83,12 +90,14 @@ class Response implements ResponseInterface
 	/** @return void  */
 	protected function sendHeader(): void
 	{
-		foreach ($this->cookies as $record) {
-			setcookie($record[0], $record[1], $record[2], $record[3], $record[4], $record[5], $record[6]);
-		}
+		if (!$this->config['request']->isCli()) {
+			foreach ($this->cookies as $record) {
+				setcookie($record[0], $record[1], $record[2], $record[3], $record[4], $record[5], $record[6]);
+			}
 
-		foreach ($this->headers as $record) {
-			header($record[0], $record[1]);
+			foreach ($this->headers as $record) {
+				header($record[0], $record[1]);
+			}
 		}
 	}
 

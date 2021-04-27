@@ -1,5 +1,7 @@
 <?php
 
+namespace projectorangebox\config;
+
 use projectorangebox\config\ConfigInterface;
 use projectorangebox\config\exceptions\MissingConfig;
 
@@ -29,25 +31,6 @@ abstract class ConfigAbstract implements ConfigInterface
 	}
 
 	/**
-	 * Get a value with default based on dot notation
-	 *
-	 * @param string $notation
-	 * @param mixed $default default if not found
-	 * @return mixed
-	 */
-	public function get(string $name, $default = null, bool $required = false)
-	{
-		$value = $this->_get($name, $default);
-
-		/* get the server config */
-		if ($default === null && $value === null && $required == true) {
-			throw new MissingConfig($name);
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Set a value based on dot notation
 	 *
 	 * @param string $notation
@@ -73,9 +56,44 @@ abstract class ConfigAbstract implements ConfigInterface
 		return $this;
 	}
 
-	/* place holder for extened classes */
-	protected function _get(string $notation,/* mixed */ $default = null) /* mixed */
+	/**
+	 * Get a value with default based on dot notation
+	 *
+	 * @param string $notation
+	 * @param mixed $default default if not found
+	 * @return mixed
+	 */
+	public function get(string $notation,/* mixed */ $default = null) /* mixed */
 	{
-		return null;
+		$value = $default;
+
+		/* single level */
+		if (array_key_exists($notation, $this->config)) {
+			$value = $this->config[$notation];
+		} else {
+			/* multiple levels */
+			$segments = explode('.', $notation);
+
+			/* now traverse the array to find the keys */
+			$array = $this->config;
+
+			foreach ($segments as $segment) {
+				$segment = strtolower($segment);
+
+				if (array_key_exists($segment, $array)) {
+					$value = $array = $array[$segment];
+				} else {
+					$value = $default;
+					break;
+				}
+			}
+		}
+
+		/* a null value is a missing configuration if a null value is needed consider using false */
+		if ($default === null && $value === null) {
+			throw new MissingConfig($notation);
+		}
+
+		return $value;
 	}
-}
+} /* end class */

@@ -1,10 +1,10 @@
 <?php
 
-namespace projectorangebox\config;
+namespace projectorangebox\config\handlers;
 
 use PDO;
 use PDOException;
-use projectorangebox\config\ConfigFile;
+use projectorangebox\config\handlers\File;
 use projectorangebox\config\ConfigInterface;
 use projectorangebox\config\exceptions\MissingConfig;
 
@@ -19,40 +19,37 @@ CREATE TABLE `config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
-class ConfigFileDatabase extends ConfigFile implements ConfigInterface
+class FileDatabase extends File implements ConfigInterface
 {
 	protected $pdo = null;
-	protected $isLoaded = [];
+	protected $databaseGroupLoaded = [];
 	protected $pdoOptions = [
 		PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 		PDO::ATTR_EMULATE_PREPARES   => false,
 	];
 
-	public function _get(string $notation,/* mixed */ $default = null) /* mixed */
+	public function get(string $notation,/* mixed */ $default = null) /* mixed */
 	{
+		/* Have we loaded this database config group yet? */
+		list($filenameGroup) = explode('.', strtolower($notation), 1);
+
+		/* load the file first */
+		parent::loadFile($filenameGroup);
+
 		/* Are they trying to attach a database? */
 		if (isset($this->config['database'])) {
-			/* try to connect to the database */
-			$this->connectDB($this->config['database']);
-
-			/* Have we loaded this database config group yet? */
-			list($fileGroup, $key) = explode('.', $notation, 2);
-
-			/* parent is file based - load file based */
-			parent::loadFile($fileGroup);
-
-			/* than try to load the entire database group */
-			$this->getGroup($fileGroup, $this->config['database']['tablename']);
+			/* than try to load the database group over it */
+			$this->getGroup($this->config['database'], $filenameGroup);
 		}
 
-		/* parent is file based */
+		/* Then get it via array */
 		return parent::get($notation, $default);
 	}
 
-	protected function connectDB(array $config)
+	protected function connectDB(array $config): PDO
 	{
-		/* is PDO setup? */
+		/* Did we connect to the database yet? */
 		if (!$this->pdo) {
 			/* check for required to make the connection */
 			if (is_array($missing = array_keys_exists(['dsn', 'user', 'password', 'tablename'], $config))) {
@@ -66,23 +63,26 @@ class ConfigFileDatabase extends ConfigFile implements ConfigInterface
 				throw new PDOException($exception->getMessage(), (int)$exception->getCode());
 			}
 		}
+
+		return $this->pdo;
 	}
 
-	protected function getGroup(string $group, string $tablename)
+	protected function getGroup(array $config, string $group)
 	{
 		/* did we already load this from the database? */
-		if (!isset($this->isLoaded[$group])) {
-			/* run the query */
-			$statement = $this->pdo->prepare("SELECT * FROM `" . $tablename . "` where `group`=:group and `enabled` = 1");
+		if (!isset($this->databaseGroupLoaded[$group])) {
+			/* try to connect to the database */
+			$statement = $this->connectDB($config)->prepare("SELECT key,value FROM `" . $this->config['database']['tablename'] . "` where `group`=:group and `enabled` = 1");
 
+			/* run the query */
 			$statement->execute(['group' => $group]);
 
 			while ($record = $statement->fetch()) {
-				$this->set($record['group'] . '.' . $record['key'], convert_to_real($record['value']));
+				$this->set($group . '.' . $record['key'], convert_to_real($record['value']));
 			}
 
 			/* mark as already loaded */
-			$this->isLoaded[$group] = true;
+			$this->databaseGroupLoaded[$group] = true;
 		}
 	}
 } /* end class */

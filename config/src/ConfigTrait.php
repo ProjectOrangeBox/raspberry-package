@@ -44,10 +44,12 @@ trait ConfigTrait
 	 *
 	 * @return [mixed]
 	 */
-	public function getConfig(string $dotNotation, $default = null, bool $required = false)
+	public function getConfig(string $dotNotation, $default = null)
 	{
-		if ($service = $this->getConfigServer()) {
-			$value = $service->get($dotNotation, $default, $required);
+		$value = null;
+
+		if ($service = $this->getConfigService()) {
+			$value = $service->get($dotNotation, $default);
 		}
 
 		return $value;
@@ -63,7 +65,7 @@ trait ConfigTrait
 	 */
 	public function setConfig(string $dotNotation, $value): void
 	{
-		if ($service = $this->getConfigServer()) {
+		if ($service = $this->getConfigService()) {
 			$service->set($dotNotation, $value);
 		}
 	}

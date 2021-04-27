@@ -15,10 +15,15 @@ abstract class DatabaseModel extends Model
 	protected $primaryColumn = null;
 	protected $hasValidate = false;
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param array $config
+	 */
 	public function __construct(array $config)
 	{
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/config.php', $config);
+		$this->config = buildConfig($config, [], __DIR__ . '/config.php');
 
 		mustBe($this->config['db'], Medoo::class);
 
@@ -28,9 +33,18 @@ abstract class DatabaseModel extends Model
 			mustBe($this->config['validateService'], ValidateInterface::class);
 
 			$this->validate = $this->config['validateService'];
+
+			$this->hasValidate = true;
 		}
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $acceptable
+	 *
+	 * @return void
+	 */
 	public function dieOnError(string $acceptable = '')
 	{
 		$error = $this->db->error();
@@ -52,6 +66,13 @@ abstract class DatabaseModel extends Model
 		}
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $acceptable
+	 *
+	 * @return void
+	 */
 	public function throwOnError(string $acceptable = '')
 	{
 		$error = $this->db->error();
@@ -61,6 +82,11 @@ abstract class DatabaseModel extends Model
 		}
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @return bool
+	 */
 	public function hasError(): bool
 	{
 		$error = $this->db->error();

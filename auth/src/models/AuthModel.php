@@ -1,6 +1,6 @@
 <?php
 
-namespace projectorangebox\auth;
+namespace projectorangebox\auth\models;
 
 use projectorangebox\model\DatabaseModel;
 
