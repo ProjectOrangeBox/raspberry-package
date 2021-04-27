@@ -22,7 +22,7 @@ class File extends ConfigAbstract implements ConfigInterface
 	 */
 	public function __construct(array $config)
 	{
-		$this->config['config'] =  array_replace(require __DIR__ . '/../config.php', $config);
+		parent::__construct($config);
 
 		/* Yes - Lets resolve it once and test it */
 		$this->configFolder = FS::resolve(trim($this->config['config']['folder'], '/'));

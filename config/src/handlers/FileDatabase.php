@@ -38,9 +38,9 @@ class FileDatabase extends File implements ConfigInterface
 		parent::loadFile($filenameGroup);
 
 		/* Are they trying to attach a database? */
-		if (isset($this->config['database'])) {
+		if (isset($this->config['config']['database'])) {
 			/* than try to load the database group over it */
-			$this->getGroup($this->config['database'], $filenameGroup);
+			$this->getGroup($this->config['config']['database'], $filenameGroup);
 		}
 
 		/* Then get it via array */
@@ -72,7 +72,7 @@ class FileDatabase extends File implements ConfigInterface
 		/* did we already load this from the database? */
 		if (!isset($this->databaseGroupLoaded[$group])) {
 			/* try to connect to the database */
-			$statement = $this->connectDB($config)->prepare("SELECT key,value FROM `" . $this->config['database']['tablename'] . "` where `group`=:group and `enabled` = 1");
+			$statement = $this->connectDB($config)->prepare("SELECT key,value FROM `" . $this->config['config']['database']['tablename'] . "` where `group`=:group and `enabled` = 1");
 
 			/* run the query */
 			$statement->execute(['group' => $group]);

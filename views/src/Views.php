@@ -24,7 +24,7 @@ class Views implements ViewsInterface
 		$this->log('debug', 'Views::__construct');
 
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/config.php', $config);
+		$this->config = array_replace(require __DIR__ . '/DefaultConfig.php', $config);
 
 		$this->views = $this->config['views'] ?? [];
 
