@@ -11,7 +11,7 @@ class Logger implements LoggerInterface
 	{
 		$config = buildConfig($config, ['handler'], ['handler' => 'File']);
 
-		$handler = '\projectorangebox\config\handlers\\' . $config['handler'];
+		$handler = '\projectorangebox\log\handlers\\' . $config['handler'];
 
 		if (class_exists($handler, false)) {
 			throw new HandlerNotFound($handler);
