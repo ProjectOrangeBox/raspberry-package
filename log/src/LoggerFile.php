@@ -1,13 +1,13 @@
 <?php
 
-namespace projectorangebox\log\handlers;
+namespace projectorangebox\log;
 
 use FS;
 use projectorangebox\log\LoggerAbstract;
 use projectorangebox\log\LoggerInterface;
 use projectorangebox\log\exceptions\NotWritable;
 
-class File extends LoggerAbstract implements LoggerInterface
+class LoggerFile extends LoggerAbstract implements LoggerInterface
 {
 	protected $logFile = null;
 	protected $filePermissions = 666; /* converted to octdec before chmod called */

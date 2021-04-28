@@ -65,6 +65,18 @@ if (!function_exists('mustBe')) {
 }
 
 if (!function_exists('buildConfig')) {
+	/**
+	 * take the passed configuration array
+	 * merge it over the default configuration array
+	 * 	passed as an array or loaded from a configration file (absolute path only supported)
+	 * then check it for required array keys
+	 * 
+	 * @param array configuration array
+	 * @param array array of required keys
+	 * @param string|array absolute path to configuration file or array of default key => value pairs
+	 * 
+	 * @return array
+	 */
 	function buildConfig(array $config, array $required = [],/* string|array */ $default = []): array
 	{
 		if (is_string($default)) {
@@ -78,7 +90,6 @@ if (!function_exists('buildConfig')) {
 		} elseif (!is_array($default)) {
 			throw new Exception('Configuration default is not an array.');
 		}
-
 
 		// Merge the passed config over the default config
 		$config = array_replace($default, $config);

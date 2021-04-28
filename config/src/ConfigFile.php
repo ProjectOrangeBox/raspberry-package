@@ -1,13 +1,13 @@
 <?php
 
-namespace projectorangebox\config\handlers;
+namespace projectorangebox\config;
 
 use FS;
 use projectorangebox\config\ConfigAbstract;
 use projectorangebox\config\ConfigInterface;
 use projectorangebox\config\exceptions\DirectoryNotFound;
 
-class File extends ConfigAbstract implements ConfigInterface
+class ConfigFile extends ConfigAbstract implements ConfigInterface
 {
 	/* storage if they are using a config folder */
 	protected $configFolder = '';

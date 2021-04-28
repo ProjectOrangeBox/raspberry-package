@@ -1,10 +1,10 @@
 <?php
 
-namespace projectorangebox\config\handlers;
+namespace projectorangebox\config;
 
 use PDO;
 use PDOException;
-use projectorangebox\config\handlers\File;
+use projectorangebox\config\ConfigFile;
 use projectorangebox\config\ConfigInterface;
 use projectorangebox\config\exceptions\MissingConfig;
 
@@ -19,7 +19,7 @@ CREATE TABLE `config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 
-class FileDatabase extends File implements ConfigInterface
+class ConfigFileDatabase extends ConfigFile implements ConfigInterface
 {
 	protected $pdo = null;
 	protected $databaseGroupLoaded = [];

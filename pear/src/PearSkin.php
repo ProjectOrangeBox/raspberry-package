@@ -45,7 +45,7 @@ class PearSkin implements PearSkinInterface
 		/* merge the passed into array over the default configuration */
 		$this->config = array_replace(require __DIR__ . '/DefaultConfig.php', $config);
 
-		$this->plugins = $config['plugins'];
+		$this->plugins = array_change_key_case($config['plugins'], CASE_LOWER);
 
 		mustBe($this->config['viewService'], ViewsInterface::class);
 	}
@@ -95,7 +95,7 @@ class PearSkin implements PearSkinInterface
 	 */
 	protected function cleanName(string $name): string
 	{
-		return 'Pear' . ucfirst(preg_replace('/^pear/i', '', strtolower($name)));
+		return 'pear' . preg_replace('/^pear/i', '', strtolower($name));
 	}
 
 	/**

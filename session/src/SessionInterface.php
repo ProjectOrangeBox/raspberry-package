@@ -5,6 +5,7 @@ namespace projectorangebox\session;
 interface SessionInterface
 {
 	public function __construct(array $config);
+	public function start(): bool; /* force session setup */
 	public function destroy(): bool;
 	public function all(): array;
 	public function get(string $key = NULL, $default = NULL); /* mixed */

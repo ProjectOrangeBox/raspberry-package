@@ -54,6 +54,11 @@ class Session implements SessionInterface
 		}
 	}
 
+	public function start(): bool
+	{
+		return (session_status() == PHP_SESSION_ACTIVE);
+	}
+
 	public function destroy(): bool
 	{
 		$_SESSION = [];

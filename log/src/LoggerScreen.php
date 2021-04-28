@@ -1,11 +1,11 @@
 <?php
 
-namespace projectorangebox\log\handlers;
+namespace projectorangebox\log;
 
 use projectorangebox\log\LoggerAbstract;
 use projectorangebox\log\LoggerInterface;
 
-class Screen extends LoggerAbstract implements LoggerInterface
+class LoggerScreen extends LoggerAbstract implements LoggerInterface
 {
 	public function __construct(array $config)
 	{
