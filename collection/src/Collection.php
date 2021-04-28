@@ -24,7 +24,7 @@ class Collection implements CollectionInterface
 	public function __construct(array $config = [])
 	{
 		/* merge the passed into array over the default configuration */
-		$this->config = array_replace(require __DIR__ . '/DefaltConfig.php', $config);
+		$this->config = array_replace(require __DIR__ . '/DefaultConfig.php', $config);
 
 		$this->makeLowercase = ($this->config['make lowercase']) ?? $this->makeLowercase;
 

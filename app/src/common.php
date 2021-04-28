@@ -54,6 +54,10 @@ if (!function_exists('showException')) {
 if (!function_exists('mustBe')) {
 	function mustBe($class, $of)
 	{
+		if (is_null($class)) {
+			throw new notInstanceOf('class is null not ' . $of);
+		}
+
 		if (!($class instanceof $of)) {
 			throw new notInstanceOf(get_class($class) . ' not ' . $of);
 		}
