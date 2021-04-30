@@ -14,6 +14,8 @@ abstract class DatabaseModel extends Model
 	protected $primaryId = null;
 	protected $primaryColumn = null;
 	protected $hasValidate = false;
+	protected $is_active = false;
+	protected $listColumns = '*';
 
 	/**
 	 * Undocumented function
@@ -92,5 +94,71 @@ abstract class DatabaseModel extends Model
 		$error = $this->db->error();
 
 		return ($error[0] == '00000');
+	}
+
+	/* crud */
+
+	protected function _create(array $columns): int
+	{
+		$this->db->insert($this->tablename, $columns);
+
+		return $this->db->id();
+	}
+
+	protected function _update(int $id, array $columns): bool
+	{
+		return $this->_updateBy([$this->primaryColumn => $id], $columns);
+	}
+
+	protected function _updateBy(array $columnKey, array $columns): bool
+	{
+		return ($this->db->update($this->tablename, $columns, $columnKey)->rowCount() > 0);
+	}
+
+	protected function _read(int $id): array
+	{
+		return $this->_readBy([$this->primaryColumn => $id]);
+	}
+
+	protected function _readBy(array $columnKey): array
+	{
+		return $this->db->get($this->tablename, '*', $columnKey);
+	}
+
+	protected function _has(string $columnName, string $columnValue = null): bool
+	{
+		if ($columnValue === null) {
+			$columnValue = $columnName;
+			$columnName = $this->primaryColumn;
+		}
+
+		return $this->db->has($this->tablename, [$columnName => $columnValue]);
+	}
+
+	protected function _delete(int $id): bool
+	{
+		return $this->_deleteBy([$this->primaryColumn => $id]);
+	}
+
+	protected function _deleteBy(array $columnKey): bool
+	{
+		return ($this->db->delete($this->tablename, $columnKey)->rowCount() > 0);
+	}
+
+	protected function _replace(int $id, array $columns): bool
+	{
+		return $this->_replaceBy([$this->primaryColumn => $id], $columns);
+	}
+
+	protected function _replaceBy(array $columnKey, array $columns): bool
+	{
+		return ($this->db->replace($this->tablename, $columns, $columnKey)->rowCount() > 0);
+	}
+
+	protected function _list(): bool
+	{
+		$where = ($this->is_active) ? ['is_active' => 1] : null;
+
+		return $this->db->select($this->tablename, $this->listColumns, $where);
 	}
 } /* end class */

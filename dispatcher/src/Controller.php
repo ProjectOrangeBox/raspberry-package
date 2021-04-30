@@ -7,11 +7,16 @@ use projectorangebox\dispatcher\ControllerInterface;
 
 abstract class Controller implements ControllerInterface
 {
-	protected $container;
+	protected $container = null;
+	protected $user = null;
 
 	public function __construct(ContainerInterface $container)
 	{
 		$this->container = $container;
+
+		if ($this->container->has('user')) {
+			$this->user = $this->container->user;
+		}
 	}
 
 	public function __get(string $name)
