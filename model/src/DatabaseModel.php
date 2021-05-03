@@ -155,7 +155,7 @@ abstract class DatabaseModel extends Model
 		return ($this->db->replace($this->tablename, $columns, $columnKey)->rowCount() > 0);
 	}
 
-	protected function _list(): bool
+	protected function _list(): array
 	{
 		$where = ($this->is_active) ? ['is_active' => 1] : null;
 
