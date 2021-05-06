@@ -64,7 +64,7 @@ if (!function_exists('mustBe')) {
 	}
 }
 
-if (!function_exists('buildConfig')) {
+if (!function_exists('mergeConfig')) {
 	/**
 	 * take the passed configuration array
 	 * merge it over the default configuration array
@@ -77,24 +77,39 @@ if (!function_exists('buildConfig')) {
 	 * 
 	 * @return array
 	 */
-	function buildConfig(array $config, array $required = [],/* string|array */ $default = []): array
+	function mergeConfig(/* string|array|null|false */$defaultConfig, array $newConfig, array $requiredKeys = []): array
 	{
-		if (is_string($default)) {
-			$defaultFile = $default;
+		if (is_string($defaultConfig)) {
+			/* need this to display error */
+			$defaultFile = $defaultConfig;
 
-			$default = require $default;
-
-			if (!is_array($default)) {
-				throw new Exception('Configuration default file "' . $defaultFile . '" did not return a array.');
+			if (!file_exists($defaultFile)) {
+				throw new Exception('Configuration file "' . $defaultFile . '" not found.');
 			}
-		} elseif (!is_array($default)) {
+
+			$defaultConfig = require $defaultFile;
+
+			if (!is_array($defaultConfig)) {
+				throw new Exception('Configuration file "' . $defaultFile . '" did not return a array.');
+			}
+		} elseif ($defaultConfig === null || $defaultConfig === false) {
+			$defaultConfig = [];
+		} elseif (!is_array($defaultConfig)) {
 			throw new Exception('Configuration default is not an array.');
 		}
 
-		// Merge the passed config over the default config
-		$config = array_replace($default, $config);
+		// replace the passed new config over the default config
+		$config = array_replace($defaultConfig, $newConfig);
 
-		if (is_array($required) && is_array($missing = array_keys_exists($required, $config))) {
+		$missing = true;
+
+		foreach ($requiredKeys as $key) {
+			if (!array_key_exists($key, $config)) {
+				$missing[] = $key;
+			}
+		}
+
+		if ($missing !== true) {
 			throw new \projectorangebox\config\exceptions\MissingConfig('Configuration Key(s) "' . implode('","', $missing) . '" missing.');
 		}
 

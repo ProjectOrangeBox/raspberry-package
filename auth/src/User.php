@@ -27,7 +27,7 @@ class User implements UserInterface
 
 	public function __construct(array $config)
 	{
-		$this->config = buildConfig($config, [], __DIR__ . '/defaultConfig.php');
+		$this->config = mergeConfig(__DIR__ . '/DefaultConfig.php', $config);
 
 		if (!isset($config['connections']['db']) && !isset($config['connections']['db']['auth'])) {
 			throw new MissingConfig('Auth connection is not set in connections config.');

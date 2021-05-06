@@ -25,7 +25,7 @@ abstract class DatabaseModel extends Model
 	public function __construct(array $config)
 	{
 		/* merge the passed into array over the default configuration */
-		$this->config = buildConfig($config, [], __DIR__ . '/DefaultConfig.php');
+		$this->config = mergeConfig(__DIR__ . '/DefaultConfig.php', $config);
 
 		mustBe($this->config['db'], Medoo::class);
 

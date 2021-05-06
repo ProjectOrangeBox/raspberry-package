@@ -98,12 +98,12 @@ function array_remap(array $array, array $mapArray): array
 }
 
 /**
- * array_keys_exists — Checks if the given key or index exists in the array
+ * array_keys_exists — Checks if the given keys exist in an array
  * 
- * note: throws error if a key is missing.
- *
- * @param array $keys
- * @param array $array
+ * returns true if all keys exist or any array of missing keys
+ * 
+ * @param array $keys (array of keys) ['a', 'b', 'c']
+ * @param array $array (key=>value pairs) ['a' => 'a', 'b' => 'b', 'c' => 'c', 'd' => 'd', 'f' => 'f']
  * @return bool:array
  */
 
