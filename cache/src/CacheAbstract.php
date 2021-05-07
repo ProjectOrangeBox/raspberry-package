@@ -40,6 +40,18 @@ abstract class CacheAbstract
 		return $bool;
 	}
 
+	/* abstract place holder */
+	protected function deleteSingle(string $name): bool
+	{
+		return true;
+	}
+
+	/* abstract place holder */
+	protected function getAllKeys(): array
+	{
+		return [];
+	}
+
 	/**
 	 * cache_info
 	 *
