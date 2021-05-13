@@ -10,7 +10,8 @@
 	],
 	"description": "Config",
 	"require": {
-		"projectorangebox/model": "dev-master"
+		"projectorangebox/model": "dev-master",
+		"delight-im/auth": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
