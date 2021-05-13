@@ -203,13 +203,18 @@ class Validate implements ValidateInterface
 	 */
 	public function setRules(array $rules, string $key = '0'): ValidateInterface
 	{
-		foreach ($rules as $k => $v) {
-			$rulesToUse = $v['rules'] ?? $v;
+		foreach ($rules as $field => $record) {
+			/* rules to run */
+			$rulesToUse = $record['rules'] ?? $record;
 
-			$humanToUse = $v['label'] ?? $k;
-			$humanToUse = $v['human'] ?? $humanToUse;
+			/* error msg */
+			$humanToUse = $record['label'] ?? $field;
 
-			$fieldToUse = $v['field'] ?? $k;
+			/* human name for field first_name = First Name for example */
+			$humanToUse = $record['human'] ?? $humanToUse;
+
+			/* data array key value */
+			$fieldToUse = $record['field'] ?? $field;
 
 			$this->rules[$key][$fieldToUse] = ['rule' => $rulesToUse, 'human' => $humanToUse, 'field' => $fieldToUse];
 		}

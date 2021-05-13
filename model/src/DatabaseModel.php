@@ -2,6 +2,7 @@
 
 namespace projectorangebox\model;
 
+use Exception;
 use Medoo\Medoo;
 use projectorangebox\validate\ValidateInterface;
 
@@ -13,9 +14,11 @@ abstract class DatabaseModel extends Model
 	protected $tablename = '';
 	protected $primaryId = null;
 	protected $primaryColumn = null;
-	protected $hasValidate = false;
 	protected $is_active = false;
 	protected $listColumns = '*';
+	protected $readColumns = '*';
+	protected $rules = [];
+	protected $columns = [];
 
 	/**
 	 * Undocumented function
@@ -35,8 +38,6 @@ abstract class DatabaseModel extends Model
 			mustBe($this->config['validateService'], ValidateInterface::class);
 
 			$this->validate = $this->config['validateService'];
-
-			$this->hasValidate = true;
 		}
 	}
 
@@ -47,7 +48,7 @@ abstract class DatabaseModel extends Model
 	 *
 	 * @return void
 	 */
-	public function dieOnError(string $acceptable = '')
+	protected function _dieOnDBError(string $acceptable = '')
 	{
 		$error = $this->db->error();
 
@@ -75,7 +76,7 @@ abstract class DatabaseModel extends Model
 	 *
 	 * @return void
 	 */
-	public function throwOnError(string $acceptable = '')
+	protected function _throwOnDBError(string $acceptable = '')
 	{
 		$error = $this->db->error();
 
@@ -89,7 +90,7 @@ abstract class DatabaseModel extends Model
 	 *
 	 * @return bool
 	 */
-	public function hasError(): bool
+	protected function _hasDBError(): bool
 	{
 		$error = $this->db->error();
 
@@ -98,20 +99,34 @@ abstract class DatabaseModel extends Model
 
 	/* crud */
 
-	protected function _create(array $columns): int
+	protected function _create(array $columns, string $ruleSetName = 'create'): int
 	{
-		$this->db->insert($this->tablename, $columns);
+		$this->columns = $columns;
+
+		if (!$this->_isValidate($ruleSetName)) {
+			/* we got a error so return 0 (false) and bail */
+			return 0;
+		}
+
+		$this->db->insert($this->tablename, $this->columns);
 
 		return $this->db->id();
 	}
 
-	protected function _update(int $id, array $columns): bool
+	protected function _update(int $id, array $columns, string $ruleSetName = 'update'): bool
 	{
-		return $this->_updateBy([$this->primaryColumn => $id], $columns);
+		return $this->_updateBy([$this->primaryColumn => $id], $columns, $ruleSetName);
 	}
 
-	protected function _updateBy(array $columnKey, array $columns): bool
+	protected function _updateBy(array $columnKey, array $columns, string $ruleSetName = 'update'): bool
 	{
+		$this->columns = $columns;
+
+		if (!$this->_isValidate($ruleSetName)) {
+			/* we got a error so return false and bail */
+			return false;
+		}
+
 		return ($this->db->update($this->tablename, $columns, $columnKey)->rowCount() > 0);
 	}
 
@@ -122,7 +137,7 @@ abstract class DatabaseModel extends Model
 
 	protected function _readBy(array $columnKey): array
 	{
-		return $this->db->get($this->tablename, '*', $columnKey);
+		return $this->db->get($this->tablename, $this->readColumns, $columnKey);
 	}
 
 	protected function _has(string $columnName, string $columnValue = null): bool
@@ -145,13 +160,20 @@ abstract class DatabaseModel extends Model
 		return ($this->db->delete($this->tablename, $columnKey)->rowCount() > 0);
 	}
 
-	protected function _replace(int $id, array $columns): bool
+	protected function _replace(int $id, array $columns, string $ruleSetName = 'update'): bool
 	{
-		return $this->_replaceBy([$this->primaryColumn => $id], $columns);
+		return $this->_replaceBy([$this->primaryColumn => $id], $columns, $ruleSetName);
 	}
 
-	protected function _replaceBy(array $columnKey, array $columns): bool
+	protected function _replaceBy(array $columnKey, array $columns, string $ruleSetName = 'update'): bool
 	{
+		$this->columns = $columns;
+
+		if (!$this->_isValidate($ruleSetName)) {
+			/* we got a error so return false and bail */
+			return false;
+		}
+
 		return ($this->db->replace($this->tablename, $columns, $columnKey)->rowCount() > 0);
 	}
 
@@ -160,5 +182,51 @@ abstract class DatabaseModel extends Model
 		$where = ($this->is_active) ? ['is_active' => 1] : null;
 
 		return $this->db->select($this->tablename, $this->listColumns, $where);
+	}
+
+	protected function _isValidate(string $ruleSetName): bool
+	{
+		$isValid = true;
+
+		if ($this->validate) {
+			if (!isset($this->ruleSets[$ruleSetName])) {
+				throw new Exception('Rule set "' . $ruleSetName . '" was not found.');
+			}
+
+			$fields = explode(',', $this->ruleSets[$ruleSetName]);
+
+			$ruleSet = [];
+			$onlyColumns = [];
+
+			foreach ($fields as $field) {
+				if (!isset($this->rules[$field])) {
+					throw new Exception('Rule "' . $field . '" not found.');
+				}
+
+				$onlyColumns[] = (isset($this->rules[$field]['field'])) ? $this->rules[$field]['field'] : $field;
+
+				$ruleSet[$field] = $this->rules[$field];
+			}
+
+			/* remove all columns not in this array and add them if they are missing as null */
+			$this->_only($onlyColumns);
+
+			$isValid = $this->validate->isValid($this->columns, $ruleSet);
+		}
+
+		return $isValid;
+	}
+
+	/* only columns in the rule set are used all others discared any empty are given null as a value */
+	protected function _only(array $keys): void
+	{
+		$only = [];
+
+		foreach ($keys as $key) {
+			$only[$key] = (isset($this->columns[$key])) ? $this->columns[$key] : null;
+		}
+
+		/* reassign because columns was passed by reference */
+		$this->columns = $only;
 	}
 } /* end class */
