@@ -57,7 +57,7 @@ class Resources extends DatabaseModel
 		return $this->_deleteBy(['group' => $group]);
 	}
 
-	public function list(): bool
+	public function list(): array
 	{
 		return $this->_list();
 	}
